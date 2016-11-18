@@ -242,6 +242,9 @@
         data: data,
         type: options.type || 'POST',
         dataType: options.dataType || 'json',
+        statusCode: {
+          422: CartJS.errorHandling.cartError(error)
+        },
         success: CartJS.Utils.ensureArray(options.success),
         error: CartJS.Utils.ensureArray(options.error),
         complete: CartJS.Utils.ensureArray(options.complete)
@@ -412,6 +415,12 @@
       return CartJS.Queue.add('/cart/update.js', {
         note: note
       }, options);
+    }
+  };
+
+  CartJS.errorHandling = {
+    cartError: function() {
+      console.log("There was an error adding an item to the cart:", error.description);
     }
   };
 
