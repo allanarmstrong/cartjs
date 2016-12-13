@@ -37,7 +37,12 @@ CartJS.Data =
   add: (e) ->
     e.preventDefault()
     $this = jQuery(this)
-    CartJS.Core.addItem $this.attr('data-cart-add'), $this.attr('data-cart-quantity')
+    props = {}
+    $('[name*="properties"]').each () -> 
+      key = $(this).attr('name').split('[')[1].split(']')[0]
+      value = $(this).val()
+      props[key] = value
+    CartJS.Core.addItem $this.attr('data-cart-add'), $this.attr('data-cart-quantity'), CartJS.Utils.unwrapKeys(props)
 
   # Handler for [data-cart-remove] click events.
   remove: (e) ->

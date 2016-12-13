@@ -243,7 +243,9 @@
         type: options.type || 'POST',
         dataType: options.dataType || 'json',
         statusCode: {
-          422: CartJS.errorHandling.cartError(error)
+          422: function(error) {
+            CartJS.errorHandling.cartError(error);
+          }
         },
         success: CartJS.Utils.ensureArray(options.success),
         error: CartJS.Utils.ensureArray(options.error),
@@ -448,10 +450,17 @@
       return $document[method]('cart.requestComplete', CartJS.Data.render);
     },
     add: function(e) {
-      var $this;
+      var $this, props;
       e.preventDefault();
       $this = jQuery(this);
-      return CartJS.Core.addItem($this.attr('data-cart-add'), $this.attr('data-cart-quantity'));
+      props = {};
+      $('[name*="properties"]').each(function() {
+        var key, value;
+        key = $(this).attr('name').split('[')[1].split(']')[0];
+        value = $(this).val();
+        return props[key] = value;
+      });
+      return CartJS.Core.addItem($this.attr('data-cart-add'), $this.attr('data-cart-quantity'), CartJS.Utils.unwrapKeys(props));
     },
     remove: function(e) {
       var $this;
